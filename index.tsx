@@ -7,6 +7,7 @@ interface Block {
   id: string;
   type: BlockType;
   content: string;
+  linkText?: string; // For custom link display text
   // Text-specific styles
   textAlign?: 'left' | 'center' | 'right';
   fontSize?: number;
@@ -127,7 +128,14 @@ const App: React.FC = () => {
   const handleAddLinkClick = () => {
     const url = prompt("Masukkan URL tautan:");
     if (url && url.trim() !== '') {
-      addBlock('link', url.trim());
+      const linkText = prompt("Masukkan teks yang akan ditampilkan (kosongkan untuk menggunakan URL):");
+      const newBlock: Block = {
+        id: `block-${Date.now()}`,
+        type: 'link',
+        content: url.trim(),
+        linkText: linkText && linkText.trim() !== '' ? linkText.trim() : undefined
+      };
+      setBlocks(prevBlocks => [...prevBlocks, newBlock]);
     } else if (url !== null) {
       alert("URL tidak boleh kosong.");
     }
@@ -212,10 +220,10 @@ const App: React.FC = () => {
         case 'video':
           return `<div class="${classes}"><video src="${block.content}" controls style="max-width: 100%;"></video></div>`;
         case 'link':
-          return `<div class="${classes}"><a href="${block.content}" target="_blank" rel="noopener noreferrer">${block.content}</a></div>`;
+          return `<div class="${classes}"><a href="${block.content}" target="_blank" rel="noopener noreferrer" title="${block.content}">${block.linkText || block.content}</a></div>`;
         default:
-          return '';
-      }
+              <a href={block.content} target="_blank" rel="noopener noreferrer" title={block.content}>
+                {block.linkText || block.content}
     }).join('\n');
 
     const fullHtml = `
