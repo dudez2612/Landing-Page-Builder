@@ -208,6 +208,15 @@ body, html {
     white-space: nowrap;
 }
 
+.text-toolbar .height-display {
+    padding: 0 4px;
+    font-size: 14px;
+    color: var(--dark-gray-color);
+    min-width: 48px;
+    text-align: center;
+    white-space: nowrap;
+}
+
 .color-picker-wrapper {
     width: 28px;
     height: 28px;

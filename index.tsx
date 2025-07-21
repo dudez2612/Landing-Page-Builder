@@ -14,6 +14,7 @@ interface Block {
   fontStyle?: 'normal' | 'italic';
   textDecoration?: 'none' | 'underline';
   color?: string;
+  minHeight?: number;
 }
 
 const App: React.FC = () => {
@@ -33,7 +34,8 @@ const App: React.FC = () => {
         fontWeight: 'normal',
         fontStyle: 'normal',
         textDecoration: 'none',
-        color: '#333333'
+        color: '#333333',
+        minHeight: 40
       }),
     };
     setBlocks(prevBlocks => [...prevBlocks, newBlock]);
@@ -73,6 +75,19 @@ const App: React.FC = () => {
           const currentSize = block.fontSize || 16;
           const newSize = Math.max(8, Math.min(72, currentSize + amount));
           return { ...block, fontSize: newSize };
+        }
+        return block;
+      })
+    );
+  };
+
+  const handleHeightChange = (id: string, amount: number) => {
+    setBlocks(blocks =>
+      blocks.map(block => {
+        if (block.id === id) {
+          const currentHeight = block.minHeight || 40;
+          const newHeight = Math.max(40, Math.min(400, currentHeight + amount));
+          return { ...block, minHeight: newHeight };
         }
         return block;
       })
@@ -188,7 +203,8 @@ const App: React.FC = () => {
             `font-weight: ${block.fontWeight || 'normal'}`,
             `font-style: ${block.fontStyle || 'normal'}`,
             `text-decoration: ${block.textDecoration || 'none'}`,
-            `color: ${block.color || '#333333'}`
+            `color: ${block.color || '#333333'}`,
+            `min-height: ${block.minHeight ? `${block.minHeight}px` : '40px'}`
           ].join('; ');
           return `<div class="${classes}" style="${textStyles}">${block.content}</div>`;
         case 'image':
@@ -249,6 +265,7 @@ const App: React.FC = () => {
               fontStyle: block.fontStyle || 'normal',
               textDecoration: block.textDecoration || 'none',
               color: block.color || 'inherit',
+              minHeight: block.minHeight ? `${block.minHeight}px` : '40px',
             }}
             contentEditable
             suppressContentEditableWarning
@@ -317,6 +334,10 @@ const App: React.FC = () => {
                   <button onClick={() => handleFontSizeChange(block.id, -2)} aria-label="Decrease font size"><span className="material-symbols-outlined">text_decrease</span></button>
                   <span className="font-size-display">{block.fontSize || 16}px</span>
                   <button onClick={() => handleFontSizeChange(block.id, 2)} aria-label="Increase font size"><span className="material-symbols-outlined">text_increase</span></button>
+                  <div className="divider"></div>
+                  <button onClick={() => handleHeightChange(block.id, -20)} aria-label="Decrease height"><span className="material-symbols-outlined">unfold_less</span></button>
+                  <span className="height-display">{block.minHeight || 40}px</span>
+                  <button onClick={() => handleHeightChange(block.id, 20)} aria-label="Increase height"><span className="material-symbols-outlined">unfold_more</span></button>
                   <div className="divider"></div>
                   <div className="color-picker-wrapper" style={{ backgroundColor: block.color }}>
                     <input
