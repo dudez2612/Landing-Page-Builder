@@ -156,17 +156,7 @@ const App: React.FC = () => {
   const handleAddLinkClick = () => {
     const url = prompt("Masukkan URL tautan:");
     if (url && url.trim() !== '') {
-      const linkText = prompt("Masukkan teks yang akan ditampilkan (kosongkan untuk menggunakan URL):");
       addBlock('link', url.trim());
-      if (linkText && linkText.trim() !== '') {
-        setBlocks(prevBlocks => 
-          prevBlocks.map((block, index) => 
-            index === prevBlocks.length - 1 
-              ? { ...block, linkText: linkText.trim() }
-              : block
-          )
-        );
-      }
     } else if (url !== null) {
       alert("URL tidak boleh kosong.");
     }
@@ -221,19 +211,34 @@ const App: React.FC = () => {
         text-decoration: none;
         font-weight: 500;
         word-break: break-all;
-        position: relative;
-        padding-right: 24px;
+        display: inline-block;
+        margin: 0 20px;
       }
-      .link-block a::after {
-        content: 'open_in_new';
-        font-family: 'Material Symbols Outlined';
-        position: absolute;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%);
-        font-size: 18px;
-        font-weight: normal;
+      .arrow-indicator {
+        font-size: 24px;
         color: var(--dark-gray-color);
+        animation: pulse-arrow 2s infinite;
+        display: inline-block;
+        font-weight: bold;
+      }
+      .left-arrow {
+        margin-right: 10px;
+        transform: rotate(-45deg);
+      }
+      .right-arrow {
+        margin-left: 10px;
+        transform: rotate(45deg);
+      }
+      @keyframes pulse-arrow {
+        0%, 100% { opacity: 1; transform: scale(1) rotate(-45deg); }
+        50% { opacity: 0.3; transform: scale(0.8) rotate(-45deg); }
+      }
+      .right-arrow {
+        animation-name: pulse-arrow-right;
+      }
+      @keyframes pulse-arrow-right {
+        0%, 100% { opacity: 1; transform: scale(1) rotate(45deg); }
+        50% { opacity: 0.3; transform: scale(0.8) rotate(45deg); }
       }
       .arrow-block {
         text-align: center;
@@ -268,8 +273,9 @@ const App: React.FC = () => {
         case 'video':
           return `<div class="${classes}"><video src="${block.content}" controls style="max-width: 100%;"></video></div>`;
         case 'link':
-          return `<div class="${classes}"><a href="${block.content}" target="_blank" rel="noopener noreferrer" title="${block.content}">${block.linkText || block.content}</a></div>`;
+          return `<div class="${classes}"><span class="arrow-indicator left-arrow">↗</span><a href="${block.content}" target="_blank" rel="noopener noreferrer">${block.content}</a><span class="arrow-indicator right-arrow">↖</span></div>`;
         case 'arrow':
+              <span className="arrow-indicator left-arrow">↗</span>
           const arrowIcons = {
             down: '↓',
             up: '↑', 
@@ -434,8 +440,9 @@ const App: React.FC = () => {
                     />
                   </div>
                 </div>
-              )}
+                {block.content}
               <ContentBlock block={block} />
+              <span className="arrow-indicator right-arrow">↖</span>
             </div>
           ))
         )}

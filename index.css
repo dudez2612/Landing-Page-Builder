@@ -274,8 +274,8 @@ body, html {
   text-decoration: none;
   font-weight: 500;
   word-break: break-all;
-  position: relative;
-  padding-right: 24px;
+  display: inline-block;
+  margin: 0 20px;
   transition: color 0.2s;
 }
 
@@ -284,9 +284,49 @@ body, html {
   text-decoration: underline;
 }
 
-.link-block a::after {
-  content: 'open_in_new';
-  font-family: 'Material Symbols Outlined';
+.arrow-indicator {
+  font-size: 24px;
+  color: var(--primary-color);
+  animation: pulse-arrow 2s infinite;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.left-arrow {
+  margin-right: 10px;
+  transform: rotate(-45deg);
+}
+
+.right-arrow {
+  margin-left: 10px;
+  transform: rotate(45deg);
+}
+
+@keyframes pulse-arrow {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1) rotate(-45deg); 
+  }
+  50% { 
+    opacity: 0.3; 
+    transform: scale(0.8) rotate(-45deg); 
+  }
+}
+
+.right-arrow {
+  animation-name: pulse-arrow-right;
+}
+
+@keyframes pulse-arrow-right {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1) rotate(45deg); 
+  }
+  50% { 
+    opacity: 0.3; 
+    transform: scale(0.8) rotate(45deg); 
+  }
+}
   position: absolute;
   top: 50%;
   right: 0;
