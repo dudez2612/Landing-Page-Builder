@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
-type BlockType = 'text' | 'image' | 'video' | 'link';
+type BlockType = 'text' | 'image' | 'video' | 'link' | 'arrow';
 
 interface Block {
   id: string;
@@ -16,6 +16,10 @@ interface Block {
   textDecoration?: 'none' | 'underline';
   color?: string;
   minHeight?: number;
+  // Arrow-specific styles
+  arrowSize?: number;
+  arrowColor?: string;
+  arrowDirection?: 'down' | 'up' | 'left' | 'right';
 }
 
 const App: React.FC = () => {
@@ -38,6 +42,11 @@ const App: React.FC = () => {
         color: '#333333',
         minHeight: 40
       }),
+      ...(type === 'arrow' && {
+        arrowSize: 48,
+        arrowColor: '#4a90e2',
+        arrowDirection: 'down'
+      }),
     };
     setBlocks(prevBlocks => [...prevBlocks, newBlock]);
   };
@@ -51,6 +60,12 @@ const App: React.FC = () => {
   };
 
   const updateBlockStyle = (id: string, newStyles: Partial<Pick<Block, 'textAlign' | 'fontSize' | 'fontWeight' | 'fontStyle' | 'textDecoration' | 'color'>>) => {
+    setBlocks(blocks =>
+      blocks.map(block => (block.id === id ? { ...block, ...newStyles } : block))
+    );
+  };
+
+  const updateArrowStyle = (id: string, newStyles: Partial<Pick<Block, 'arrowSize' | 'arrowColor' | 'arrowDirection'>>) => {
     setBlocks(blocks =>
       blocks.map(block => (block.id === id ? { ...block, ...newStyles } : block))
     );
@@ -89,6 +104,19 @@ const App: React.FC = () => {
           const currentHeight = block.minHeight || 40;
           const newHeight = Math.max(40, Math.min(400, currentHeight + amount));
           return { ...block, minHeight: newHeight };
+        }
+        return block;
+      })
+    );
+  };
+
+  const handleArrowSizeChange = (id: string, amount: number) => {
+    setBlocks(blocks =>
+      blocks.map(block => {
+        if (block.id === id) {
+          const currentSize = block.arrowSize || 48;
+          const newSize = Math.max(24, Math.min(120, currentSize + amount));
+          return { ...block, arrowSize: newSize };
         }
         return block;
       })
@@ -139,6 +167,11 @@ const App: React.FC = () => {
     } else if (url !== null) {
       alert("URL tidak boleh kosong.");
     }
+    setShowAddOptions(false);
+  };
+
+  const handleAddArrowClick = () => {
+    addBlock('arrow', '');
     setShowAddOptions(false);
   };
 
@@ -199,6 +232,18 @@ const App: React.FC = () => {
         font-weight: normal;
         color: var(--dark-gray-color);
       }
+      .arrow-block {
+        text-align: center;
+        padding: 20px;
+      }
+      .arrow-block .arrow-symbol {
+        display: inline-block;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.3; transform: scale(0.8); }
+      }
     `;
 
     const blocksHtml = blocks.map(block => {
@@ -221,6 +266,34 @@ const App: React.FC = () => {
           return `<div class="${classes}"><video src="${block.content}" controls style="max-width: 100%;"></video></div>`;
         case 'link':
           return `<div class="${classes}"><a href="${block.content}" target="_blank" rel="noopener noreferrer" title="${block.content}">${block.linkText || block.content}</a></div>`;
+        case 'arrow':
+          const arrowIcon = {
+            down: '↓',
+            up: '↑', 
+            left: '←',
+            right: '→'
+        case 'arrow':
+          const arrowIcons = {
+            down: '↓',
+            up: '↑',
+            left: '←', 
+            right: '→'
+          };
+          return (
+            <div className="content-block arrow-block">
+              <span 
+                className="arrow-symbol"
+                style={{
+                  fontSize: `${block.arrowSize || 48}px`,
+                  color: block.arrowColor || '#4a90e2'
+                }}
+              >
+                {arrowIcons[block.arrowDirection || 'down']}
+              </span>
+            </div>
+          );
+          }[block.arrowDirection || 'down'];
+          return `<div class="${classes}" style="text-align: center; animation: pulse 2s infinite;"><span style="font-size: ${block.arrowSize || 48}px; color: ${block.arrowColor || '#4a90e2'}; display: inline-block;">${arrowIcon}</span></div>`;
       }
     }).join('\n');
 
@@ -356,6 +429,28 @@ const App: React.FC = () => {
                   </div>
                 </div>
               )}
+              {block.type === 'arrow' && (
+                <div className="text-toolbar">
+                  <button onClick={() => updateArrowStyle(block.id, { arrowDirection: 'up' })} className={block.arrowDirection === 'up' ? 'active' : ''} aria-label="Arrow up"><span className="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button onClick={() => updateArrowStyle(block.id, { arrowDirection: 'down' })} className={block.arrowDirection === 'down' ? 'active' : ''} aria-label="Arrow down"><span className="material-symbols-outlined">keyboard_arrow_down</span></button>
+                  <button onClick={() => updateArrowStyle(block.id, { arrowDirection: 'left' })} className={block.arrowDirection === 'left' ? 'active' : ''} aria-label="Arrow left"><span className="material-symbols-outlined">keyboard_arrow_left</span></button>
+                  <button onClick={() => updateArrowStyle(block.id, { arrowDirection: 'right' })} className={block.arrowDirection === 'right' ? 'active' : ''} aria-label="Arrow right"><span className="material-symbols-outlined">keyboard_arrow_right</span></button>
+                  <div className="divider"></div>
+                  <button onClick={() => handleArrowSizeChange(block.id, -8)} aria-label="Decrease arrow size"><span className="material-symbols-outlined">remove</span></button>
+                  <span className="font-size-display">{block.arrowSize || 48}px</span>
+                  <button onClick={() => handleArrowSizeChange(block.id, 8)} aria-label="Increase arrow size"><span className="material-symbols-outlined">add</span></button>
+                  <div className="divider"></div>
+                  <div className="color-picker-wrapper" style={{ backgroundColor: block.arrowColor }}>
+                    <input
+                      type="color"
+                      value={block.arrowColor || '#4a90e2'}
+                      onChange={(e) => updateArrowStyle(block.id, { arrowColor: e.target.value })}
+                      aria-label="Change arrow color"
+                      title="Ubah warna panah"
+                    />
+                  </div>
+                </div>
+              )}
               <ContentBlock block={block} />
             </div>
           ))
@@ -379,6 +474,10 @@ const App: React.FC = () => {
            <button onClick={handleAddLinkClick}>
              <span className="material-symbols-outlined">link</span>
              URL
+           </button>
+           <button onClick={handleAddArrowClick}>
+             <span className="material-symbols-outlined">south</span>
+             Panah
            </button>
         </div>
         <button 
