@@ -123,7 +123,7 @@ const App: React.FC = () => {
   const handleAddTextClick = () => {
     addBlock('text');
     setShowAddOptions(false);
-  }
+  };
 
   const handleAddLinkClick = () => {
     const url = prompt("Masukkan URL tautan:");
@@ -220,10 +220,10 @@ const App: React.FC = () => {
         case 'video':
           return `<div class="${classes}"><video src="${block.content}" controls style="max-width: 100%;"></video></div>`;
         case 'link':
-          return `<div class="${classes}"><a href="${block.content}" target="_blank" rel="noopener noreferrer" title="${block.content}">${block.linkText || block.content}</a></div>`;
+          return `<div class="${classes}"><a href="${block.content}" target="_blank" rel="noopener noreferrer">${block.linkText || block.content}</a></div>`;
         default:
-              <a href={block.content} target="_blank" rel="noopener noreferrer" title={block.content}>
-                {block.linkText || block.content}
+          return '';
+      }
     }).join('\n');
 
     const fullHtml = `
@@ -297,7 +297,7 @@ const App: React.FC = () => {
         return (
           <div className="content-block link-block">
             <a href={block.content} target="_blank" rel="noopener noreferrer">
-              {block.content}
+              {block.linkText || block.content}
             </a>
           </div>
         );
