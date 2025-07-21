@@ -267,33 +267,14 @@ const App: React.FC = () => {
         case 'link':
           return `<div class="${classes}"><a href="${block.content}" target="_blank" rel="noopener noreferrer" title="${block.content}">${block.linkText || block.content}</a></div>`;
         case 'arrow':
-          const arrowIcon = {
+          const arrowIcons = {
             down: '↓',
             up: '↑', 
             left: '←',
             right: '→'
-        case 'arrow':
-          const arrowIcons = {
-            down: '↓',
-            up: '↑',
-            left: '←', 
-            right: '→'
           };
-          return (
-            <div className="content-block arrow-block">
-              <span 
-                className="arrow-symbol"
-                style={{
-                  fontSize: `${block.arrowSize || 48}px`,
-                  color: block.arrowColor || '#4a90e2'
-                }}
-              >
-                {arrowIcons[block.arrowDirection || 'down']}
-              </span>
-            </div>
-          );
-          }[block.arrowDirection || 'down'];
-          return `<div class="${classes}" style="text-align: center; animation: pulse 2s infinite;"><span style="font-size: ${block.arrowSize || 48}px; color: ${block.arrowColor || '#4a90e2'}; display: inline-block;">${arrowIcon}</span></div>`;
+          const arrowIcon = arrowIcons[block.arrowDirection || 'down'];
+          return `<div class="${classes}"><span style="font-size: ${block.arrowSize || 48}px; color: ${block.arrowColor || '#4a90e2'}; display: inline-block;">${arrowIcon}</span></div>`;
       }
     }).join('\n');
 
