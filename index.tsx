@@ -157,13 +157,16 @@ const App: React.FC = () => {
     const url = prompt("Masukkan URL tautan:");
     if (url && url.trim() !== '') {
       const linkText = prompt("Masukkan teks yang akan ditampilkan (kosongkan untuk menggunakan URL):");
-      const newBlock: Block = {
-        id: `block-${Date.now()}`,
-        type: 'link',
-        content: url.trim(),
-        linkText: linkText && linkText.trim() !== '' ? linkText.trim() : undefined
-      };
-      setBlocks(prevBlocks => [...prevBlocks, newBlock]);
+      addBlock('link', url.trim());
+      if (linkText && linkText.trim() !== '') {
+        setBlocks(prevBlocks => 
+          prevBlocks.map((block, index) => 
+            index === prevBlocks.length - 1 
+              ? { ...block, linkText: linkText.trim() }
+              : block
+          )
+        );
+      }
     } else if (url !== null) {
       alert("URL tidak boleh kosong.");
     }
