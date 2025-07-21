@@ -221,12 +221,6 @@ const App: React.FC = () => {
           return `<div class="${classes}"><video src="${block.content}" controls style="max-width: 100%;"></video></div>`;
         case 'link':
           return `<div class="${classes}"><a href="${block.content}" target="_blank" rel="noopener noreferrer" title="${block.content}">${block.linkText || block.content}</a></div>`;
-        default:
-          return `<div class="${classes}">
-              <a href="${block.content}" target="_blank" rel="noopener noreferrer" title="${block.content}">
-                ${block.linkText || block.content}
-              </a>
-            </div>`;
       }
     }).join('\n');
 
