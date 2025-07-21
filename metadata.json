@@ -1,0 +1,6 @@
+{
+  "name": "Dynamic Landing Page Builder",
+  "description": "An application to dynamically build a landing page by adding text, image, and video content blocks.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
