@@ -211,34 +211,19 @@ const App: React.FC = () => {
         text-decoration: none;
         font-weight: 500;
         word-break: break-all;
-        display: inline-block;
-        margin: 0 20px;
+        position: relative;
+        padding-right: 24px;
       }
-      .arrow-indicator {
-        font-size: 24px;
+      .link-block a::after {
+        content: 'open_in_new';
+        font-family: 'Material Symbols Outlined';
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        font-size: 18px;
+        font-weight: normal;
         color: var(--dark-gray-color);
-        animation: pulse-arrow 2s infinite;
-        display: inline-block;
-        font-weight: bold;
-      }
-      .left-arrow {
-        margin-right: 10px;
-        transform: rotate(-45deg);
-      }
-      .right-arrow {
-        margin-left: 10px;
-        transform: rotate(45deg);
-      }
-      @keyframes pulse-arrow {
-        0%, 100% { opacity: 1; transform: scale(1) rotate(-45deg); }
-        50% { opacity: 0.3; transform: scale(0.8) rotate(-45deg); }
-      }
-      .right-arrow {
-        animation-name: pulse-arrow-right;
-      }
-      @keyframes pulse-arrow-right {
-        0%, 100% { opacity: 1; transform: scale(1) rotate(45deg); }
-        50% { opacity: 0.3; transform: scale(0.8) rotate(45deg); }
       }
       .arrow-block {
         text-align: center;
@@ -275,7 +260,6 @@ const App: React.FC = () => {
         case 'link':
           return `<div class="${classes}"><span class="arrow-indicator left-arrow">↗</span><a href="${block.content}" target="_blank" rel="noopener noreferrer">${block.content}</a><span class="arrow-indicator right-arrow">↖</span></div>`;
         case 'arrow':
-              <span className="arrow-indicator left-arrow">↗</span>
           const arrowIcons = {
             down: '↓',
             up: '↑', 
@@ -362,6 +346,27 @@ const App: React.FC = () => {
             </a>
           </div>
         );
+      case 'arrow':
+        const arrowIcons = {
+          down: '↓',
+          up: '↑', 
+          left: '←',
+          right: '→'
+        };
+        const arrowIcon = arrowIcons[block.arrowDirection || 'down'];
+        return (
+          <div className="content-block arrow-block" style={{ textAlign: 'center' }}>
+            <span 
+              style={{
+                fontSize: block.arrowSize ? `${block.arrowSize}px` : '48px',
+                color: block.arrowColor || '#4a90e2',
+                display: 'inline-block'
+              }}
+            >
+              {arrowIcon}
+            </span>
+          </div>
+        );
       default:
         return null;
     }
@@ -440,9 +445,8 @@ const App: React.FC = () => {
                     />
                   </div>
                 </div>
-                {block.content}
+              )}
               <ContentBlock block={block} />
-              <span className="arrow-indicator right-arrow">↖</span>
             </div>
           ))
         )}
